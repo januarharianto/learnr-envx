@@ -44,7 +44,10 @@ To begin, click on **Continue**.
 ## Hold your horses
 
 Remember, you need to create your own R Markdown or Quarto document and then
-follow the exercises within.
+follow the exercises in this document:
+
+1. Open your RStudio Project for this unit.
+2. Create an R Markdown file.
 
 Click on **Next Topic** to start the Lab exercises.
 
