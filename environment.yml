@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+dependencies:
+  - r-base=4.2.2
+  - r-tidyverse
+  - r-moments
+  - r-learnr
