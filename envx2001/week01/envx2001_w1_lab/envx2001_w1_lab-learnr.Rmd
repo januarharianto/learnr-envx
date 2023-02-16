@@ -19,53 +19,41 @@ Welcome to the first Lab for **ENVX2001**. In this session we want to gradually 
 Regardless, this lab will get you (re)started with R statistical programming by going through a few simple concepts and running some basic functions.
 
 ::: {.alert .alert-warning}
-By now you should have completed **Tutorial 1**, which is a self-guided, 1-hour exercise. These tutorial documents are to be completed *every week*. 
+By now you should have completed **Tutorial 1**, which is a self-guided, 1-hour exercise. These tutorial documents are to be completed *every week*.
 :::
 
 ::: {.alert .alert-info}
 If you are confused and need help, we have a series of videos available on [**Canvas**](https://canvas.sydney.edu.au/). On the ENVX2001 page, find **Week 1: Introduction** in the Modules page, and click on **Week 1 Getting Started** for some introductory videos.
 :::
 
-### How to participate in the Lab session
+### Lab protocol
 
-This is a `learnr` document, which dispenses information and exersises in an interactive format. Unlike Tutorials, you are *not* expected to input any response or code in this document. Instead, you should **create your own R Markdown or Quarto document** and then follow the exercises within.
+1.  Open your RStudio Project for ENVX2001. The project should have been created if you had completed the Tutorial for Week 1 (this week).
+2.  Knit this file to generate the HTML output, then close this document.
+3.  Create a new R Markdown file and name it accordingly e.g. `Lab1.Rmd`. The file should have been created if you had completed the Tutorial for Week 1 (this week).
 
 ### Learning Outcomes
 
 At the end of this lab students should be able to:
 
-1. explain the differences between (i) samples and populations (ii) standard error and standard deviation;
-2. use R to perform basic data analysis tasks related to exploratory data analysis;
-3. present their code and results using RMarkdown.
+1.  explain the differences between (i) samples and populations (ii) standard error and standard deviation;
+2.  use R to perform basic data analysis tasks related to exploratory data analysis;
+3.  present their code and results using RMarkdown.
 
-To begin, click on **Continue**.
-
-
-## Hold your horses
-
-Remember, you need to create your own R Markdown or Quarto document and then
-follow the exercises in this document:
-
-1. Open your RStudio Project for this unit.
-2. Create an R Markdown file.
-
-Click on **Next Topic** to start the Lab exercises.
-
-
-## Topic 1: Key concepts 
+## Topic 1: Key concepts
 
 ### Discuss
 
 Discuss in groups or with the person next to you:
 
-1. The difference between the **standard error of the mean** and the **standard deviation**;
-2. The difference between the **sample** distribution, **population** distribution and **sampling** distribution; and for each give a metric that describes the variation in each of these distributions;
-3. A good description of what a confidence interval is, and how it can be used to understand data better.
+1.  The difference between the **standard error of the mean** and the **standard deviation**;
+2.  The difference between the **sample** distribution, **population** distribution and **sampling** distribution; and for each give a metric that describes the variation in each of these distributions;
+3.  A good description of what a confidence interval is, and how it can be used to understand data better.
 
 **Optional: To make this interesting, you may use Generative AI to assist in the discussions.**
 
-- [ChatGPT](https://openai.com/blog/chatgpt/)
-- [RTutor.ai](https://rtutor.ai)
+-   [ChatGPT](https://openai.com/blog/chatgpt/)
+-   [RTutor.ai](https://rtutor.ai)
 
 These websites have long waiting lists and may not be available during class.
 
@@ -73,13 +61,13 @@ These websites have long waiting lists and may not be available during class.
 
 ### Introduction
 
-As part of a benthic community survey of Lady Elliot Island, 16 sea stars, *Linckia laevigata*, were collected and their longest arm was measured to the nearest tenth of a centimetre. The researcher wishes to test whether the mean value of the samples measured is significantly different from 12 cm as observed elsewhere in Australia. 
+As part of a benthic community survey of Lady Elliot Island, 16 sea stars, *Linckia laevigata*, were collected and their longest arm was measured to the nearest tenth of a centimetre. The researcher wishes to test whether the mean value of the samples measured is significantly different from 12 cm as observed elsewhere in Australia.
 
 ::: {.alert .alert-warning}
 **Exercise**: Google where Lady Eliott Island is located and proposed a scientfic reason why the sea stars there may be different in size to those elsewhere in Australia.
 :::
 
-Suppose we have data written on a lab notebook. The data is small enough that we can key in the data manually into R. 
+Suppose we have data written on a lab notebook. The data is small enough that we can key in the data manually into R.
 
 ```{r}
 stars <- c(
@@ -90,11 +78,11 @@ stars <- c(
 
 Can you read the code above? The key features are:
 
-1. The function, `c()`, is used to combine a list of numbers into a vector. Functions are simple to recognise as the are commonly words followed by parentheses, `()`. 
-2. Functions, when evaluated successfully, create data **outputs**.
-3. Data outputs are not saved unless we use the assignment operator, `<-` or `=`, to assign a name to the output. This allows us to save the data output as a data **object**.
+1.  The function, `c()`, is used to combine a list of numbers into a vector. Functions are simple to recognise as the are commonly words followed by parentheses, `()`.
+2.  Functions, when evaluated successfully, create data **outputs**.
+3.  Data outputs are not saved unless we use the assignment operator, `<-` or `=`, to assign a name to the output. This allows us to save the data output as a data **object**.
 
-The advantage of saving data as objects is that they can be saved for the later use. 
+The advantage of saving data as objects is that they can be saved for the later use.
 
 ### Exploring data
 
@@ -104,7 +92,7 @@ To find the mean of the `stars` dataset we use the `mean()` function.
 mean(stars)
 ```
 
-This and other functions for calculating summary statistics are shown in the table below.  Calculate these for the `stars` dataset.  Make sure you understand what each means.
+This and other functions for calculating summary statistics are shown in the table below. Calculate these for the `stars` dataset. Make sure you understand what each means.
 
 ```{r, echo=FALSE}
 statistic <- c("median", "sample variance", "sample standard deviation", "minimum", "maximum", "1st quartile", "3rd quartile", "number of observations", "interquartile range")
@@ -114,7 +102,8 @@ library(knitr)
 kable(tdata)
 ```
 
-Rather than using all of these individually you can use the `summary()` function which gives the minimum, maximum, 1st and 3rd quartiles, mean and median values.   
+Rather than using all of these individually you can use the `summary()` function which gives the minimum, maximum, 1st and 3rd quartiles, mean and median values.
+
 ```{r}
 summary(stars)
 ```
@@ -132,27 +121,25 @@ t.test(stars)
 ::: {.alert .alert-warning}
 **Exercise**: Interpret the 95% CI in terms of the statistical hypotheses:
 
-- $H_0: \mu = 12$;
-- $H_1: \mu \neq 12$.
+-   $H_0: \mu = 12$;
+-   $H_1: \mu \neq 12$.
 :::
 
 ## Topic 3: Water chemistry
 
 ### More exploration
 
-We will now perform some exploratory data analysis on a more substantive dataset.
-The dataset is 39 measurements of water chemistry in streams that was presented by Lovett et al. (2000).  We will focus on the sulphate concentration.  The dataset is used by Quinn & Keough (2002)  to describe summary statistics, and confidence intervals [Box 2.2, p. 21].
+We will now perform some exploratory data analysis on a more substantive dataset. The dataset is 39 measurements of water chemistry in streams that was presented by Lovett et al. (2000). We will focus on the sulphate concentration. The dataset is used by Quinn & Keough (2002) to describe summary statistics, and confidence intervals [Box 2.2, p. 21].
 
-Reference: Lovett GM, Weathers KC & Sobczak WV (2000)  Ecological Applications 10: 73-84.
+Reference: Lovett GM, Weathers KC & Sobczak WV (2000) Ecological Applications 10: 73-84.
 
 ### Importing data
 
-The most common way to enter data into R is to import it from an external file. In this example, we will import the data found in the worksheet called **water** from `water.xlsx`. 
+The most common way to enter data into R is to import it from an external file. In this example, we will import the data found in the worksheet called **water** from `water.xlsx`.
 
-First we need to tell R where the file will be located, called our working directory. When you open your **ENVX2001** project file the folder in which this is located is your working directory. 
+First we need to tell R where the file will be located, called our working directory. When you open your **ENVX2001** project file the folder in which this is located is your working directory.
 
-We will use the `readxl` package to directly import MS Excel files. 
-See the code below, note how we specify the **water** worksheet with the argument; `sheet = "water"`.
+We will use the `readxl` package to directly import MS Excel files. See the code below, note how we specify the **water** worksheet with the argument; `sheet = "water"`.
 
 ```{r}
 library(readxl)
@@ -161,31 +148,28 @@ water <- read_excel("water.xlsx", sheet = "water")
 
 The `read_excel()` function creates a data frame object, a common data format in R. This is how we read the code:
 
-1. The function `read_excel()` is used to read the file called `water.xlsx`.
-2. Specifically, data from the tabbed sheet called "water" is imported.
-3. The output of the function is an object of class `data.frame`.
-4. The object, `water`, is assigned to this data frame.
+1.  The function `read_excel()` is used to read the file called `water.xlsx`.
+2.  Specifically, data from the tabbed sheet called "water" is imported.
+3.  The output of the function is an object of class `data.frame`.
+4.  The object, `water`, is assigned to this data frame.
 
+It creates a data frame object which consists of columns of data which may be of different types, e.g. character, numeric. In the code above we have called the object `water`.
 
+To check the data has been read in properly it is recommended to use the `str()` or `glimpse()` function shows the data type for each of the columns and gives the first 10 values for each column. The data frame `water` has only one column called `SO4` and is numerical data, denoted by `num`.
 
-It creates a data frame object which consists of columns of data which may be of different types, e.g. character, numeric.  In the code above we have called the object `water`.
-
-To check the data has been read in properly it is recommended to use the `str()` or `glimpse()` function shows the data type for each of the columns and gives the first 10 values for each column.  The data frame `water` has only one column called `SO4` and is numerical data, denoted by `num`.
-
-``` {r}
+```{r}
 str(water)
 ```
 
 ### Referencing data in data frames
 
-Individual values within data frames can be accessed by specifying its row and column number in square brackets, [ ].  The 1st number is the row number and the 2nd number specifies the column number.  For example, to access the third value in the `SO4` data we would use:
+Individual values within data frames can be accessed by specifying its row and column number in square brackets, [ ]. The 1st number is the row number and the 2nd number specifies the column number. For example, to access the third value in the `SO4` data we would use:
 
 ```{r}
 water[3, 1]
 ```
 
-In this example 3 represents row 3, and 1 represents column 1.
-Entire columns of data can be referenced by leaving the row number blank:
+In this example 3 represents row 3, and 1 represents column 1. Entire columns of data can be referenced by leaving the row number blank:
 
 ```{r}
 water[, 1]
@@ -205,7 +189,7 @@ To check for names in a data frame, use the `names()` function:
 names(water)
 ```
 
-Or, use the `str()` function.  To apply a function to a particular column in the data frame we need to specify the column, for example:
+Or, use the `str()` function. To apply a function to a particular column in the data frame we need to specify the column, for example:
 
 ```{r}
 summary(water$SO4)
@@ -223,13 +207,11 @@ We can create histograms by using the `hist()` function.
 hist(water$SO4)
 ```
 
-Now we need to label the figure properly.  The arguments for labelling are `xlab` for the x-axis, `ylab` for the y-axis and `main` for the main title. 
-The y-axis is fine but the x-axis is incorrect.  The standard way to label axes is by the name of property and also units.  In this case it is sulphate concentration in parts per million. 
+Now we need to label the figure properly. The arguments for labelling are `xlab` for the x-axis, `ylab` for the y-axis and `main` for the main title. The y-axis is fine but the x-axis is incorrect. The standard way to label axes is by the name of property and also units. In this case it is sulphate concentration in parts per million.
 
 ```{r}
 hist(water$SO4, xlab = "Suplhate conc. (ppm)")
 ```
-
 
 ### Removing the title
 
@@ -239,7 +221,7 @@ In scientific publications it is not normal practice to display the title within
 hist(water$SO4, xlab = "Suplhate conc. (ppm)", main = "")
 ```
 
-The table below gives heuristic rules about which graphical summary to use based on the number of observations.  
+The table below gives heuristic rules about which graphical summary to use based on the number of observations.
 
 ```{r, echo=FALSE}
 observations <- c("1-5", "6-20", "20 or more")
@@ -251,14 +233,14 @@ kable(gdata)
 ```
 
 ::: {.alert .alert-warning}
-**Exercise**: Create a boxplot for the `SO4` dataset.  Plot the raw data using the `stripchart` function.  For each graphical summary you have used, what are the advantages and disadvantages of each for describing the `SO4` dataset?
+**Exercise**: Create a boxplot for the `SO4` dataset. Plot the raw data using the `stripchart` function. For each graphical summary you have used, what are the advantages and disadvantages of each for describing the `SO4` dataset?
 :::
 
 ### Downloading packages
 
-All of the functions and datasets in R are organised into packages.  There are the standard (or base) packages which are part of the source code - the functions and datasets that make up these packages are automatically available when R is opened.  There are also many contributed packages.  These have been written by many different authors, often to implement methods that are not available in the base packages.  If you are unable to find a method in the base packages, you might be able to find it in a contributed package.  The Comprehensive R Archive Network (CRAN) site (http://cran.r-project.org/) is where many contributed packages can be downloaded.  Click on packages on the left hand side.
+All of the functions and datasets in R are organised into packages. There are the standard (or base) packages which are part of the source code - the functions and datasets that make up these packages are automatically available when R is opened. There are also many contributed packages. These have been written by many different authors, often to implement methods that are not available in the base packages. If you are unable to find a method in the base packages, you might be able to find it in a contributed package. The Comprehensive R Archive Network (CRAN) site (<http://cran.r-project.org/>) is where many contributed packages can be downloaded. Click on packages on the left hand side.
 
-In this case, the package called `moments` contains a function for calculating skew, called `skewness`.  The skewness ($g_1$) of a dataset gives an indication of its symmetry.   The sign of the skewness tells us whether the data is positive or negative.  It is useful as one source of evidence for determining whether the data is normally distributed, particularly when having to assess normality for many variables at once.  First we must install it using the `install.packages` function and the load it using the `library` function.  
+In this case, the package called `moments` contains a function for calculating skew, called `skewness`. The skewness ($g_1$) of a dataset gives an indication of its symmetry. The sign of the skewness tells us whether the data is positive or negative. It is useful as one source of evidence for determining whether the data is normally distributed, particularly when having to assess normality for many variables at once. First we must install it using the `install.packages` function and the load it using the `library` function.
 
 ```{r,warning=FALSE}
 # install.packages("moments", repos = "http://cran.csiro.au/")
@@ -275,39 +257,39 @@ skewness(water$SO4)
 
 ### Data analysis
 
-The first step in any data analysis is using statistical and graphical summaries describe the key features of a dataset.  The statistics and graphics we use depend on the type of variables, i.e. numerical (quantitative) or categorical (qualitative).  The summary of the data can be used as standalone analysis or the first step in a more sophisticated data analysis such as predictive modelling.   
+The first step in any data analysis is using statistical and graphical summaries describe the key features of a dataset. The statistics and graphics we use depend on the type of variables, i.e. numerical (quantitative) or categorical (qualitative). The summary of the data can be used as standalone analysis or the first step in a more sophisticated data analysis such as predictive modelling.
 
-The example dataset we will use is from the catchment of Muttama creek which is located near Canberra.  Further details about the catchment are given in Orton et al. (2016).  56 sites were sampled for soil to a depth varying between 1 and 2m, and various soil and site properties were measured.  
+The example dataset we will use is from the catchment of Muttama creek which is located near Canberra. Further details about the catchment are given in Orton et al. (2016). 56 sites were sampled for soil to a depth varying between 1 and 2m, and various soil and site properties were measured.
 
-Reference:  Orton TG, Pringle MJ & Bishop, TFA (2016). A one-step approach for modelling and mapping soil properties based on profile data sampled over varying depth intervals. Geoderma 262: 174-186.
+Reference: Orton TG, Pringle MJ & Bishop, TFA (2016). A one-step approach for modelling and mapping soil properties based on profile data sampled over varying depth intervals. Geoderma 262: 174-186.
 
 ### About the data
 
 In this work we will focus on describing a subset of soil properties:
 
-- `clay0` which is the clay (%) for the 0-30 cm depth layer;
-- `clay60` which is the clay (%) for the 60-90 cm depth layer;
-- `ec0` which is the electrical conductivity (EC) ($\mu$S/cm) for the 0-30 cm depth layer;
-- `ec60` which is the electrical conductivity (EC) ($\mu$S/cm) for the 60-90 cm depth layer.
+-   `clay0` which is the clay (%) for the 0-30 cm depth layer;
+-   `clay60` which is the clay (%) for the 60-90 cm depth layer;
+-   `ec0` which is the electrical conductivity (EC) ($\mu$S/cm) for the 0-30 cm depth layer;
+-   `ec60` which is the electrical conductivity (EC) ($\mu$S/cm) for the 60-90 cm depth layer.
 
-The clay content of a soil determines the nutrients and water it can hold, while EC is a measure of the salt in the soil which if too high limits plant growth.  We wish to describe these data in terms of:
+The clay content of a soil determines the nutrients and water it can hold, while EC is a measure of the salt in the soil which if too high limits plant growth. We wish to describe these data in terms of:
 
-- typical values, their variability and identify unusual observations;
-- differences between different depths;
-- differences between the 2 soil properties; clay and EC.
+-   typical values, their variability and identify unusual observations;
+-   differences between different depths;
+-   differences between the 2 soil properties; clay and EC.
 
 We are also interested in describing the dataset in terms of the lithology and land use found at each of the sites.
 
 ### Data import
 
-The data is in the worksheet called **soil** found in the `water.xlsx` file.  Import the the dataset into R and examine its structure using the `str()` function.  Note that some columns have missing data denoted as `NA` so we need to use the `na` argument.
+The data is in the worksheet called **soil** found in the `water.xlsx` file. Import the the dataset into R and examine its structure using the `str()` function. Note that some columns have missing data denoted as `NA` so we need to use the `na` argument.
 
 ```{r}
 soil <- read_excel("water.xlsx", sheet = "soil", na = "NA")
 str(soil)
 ```
 
-You will notice that `lithology` and `land use` read in as `character` data.  We need to convert this to categorical data, know as factors using the `as.factor` function. The code for doing this is shown below.
+You will notice that `lithology` and `land use` read in as `character` data. We need to convert this to categorical data, know as factors using the `as.factor` function. The code for doing this is shown below.
 
 ```{r}
 soil$lithology <- as.factor(soil$lithology)
@@ -318,12 +300,15 @@ str(soil)
 ### Categorical data
 
 A common way to describe categorical data is to create a frequency table which presents the number of observations belonging to each class.
+
 ```{r}
 table(soil$land_use)
 ```
+
 From this we can see the dominant (most commonly sampled) land use is `Grazing`.
 
 A common graphic used to summarise categorical data is a bar plot which can be created with the `plot()` function.
+
 ```{r}
 plot(soil$land_use, xlab = "Land Use", ylab = "Frequency")
 ```
@@ -334,24 +319,25 @@ plot(soil$land_use, xlab = "Land Use", ylab = "Frequency")
 
 ### Numerical data
 
-In this case we have 4 properties of interest, clay and EC at 2 different depths.  Rather than calculating statistics on each variable separately you can in **some cases** apply the function to multiple columns in a data frame.  In our case the columns of interest are the 2nd to 5th in the `soil` data frame and we can apply the `summary()` function to all at once.
+In this case we have 4 properties of interest, clay and EC at 2 different depths. Rather than calculating statistics on each variable separately you can in **some cases** apply the function to multiple columns in a data frame. In our case the columns of interest are the 2nd to 5th in the `soil` data frame and we can apply the `summary()` function to all at once.
+
 ```{r}
 summary(soil[, 2:5])
 ```
 
 ::: {.alert .alert-warning}
-**Exercise**: For each of the clay and EC properties (at all depths), give the most appropriate estimate of centre and variation.  Are there any unusual observations?  Justify your answers.
+**Exercise**: For each of the clay and EC properties (at all depths), give the most appropriate estimate of centre and variation. Are there any unusual observations? Justify your answers.
 :::
 
 ::: {.alert .alert-warning}
-**Exercise**: Is clay content more variable in the 0-30 cm layer or in the 30-60 cm layer?  For the 0-30 cm layer is clay or EC the most variable property.  Justify your answers. 
+**Exercise**: Is clay content more variable in the 0-30 cm layer or in the 30-60 cm layer? For the 0-30 cm layer is clay or EC the most variable property. Justify your answers.
 :::
 
 ### Is there a difference between land uses and lithology?
 
-Of interest to researchers is to assess the differences in a variable between groupings of data, e.g. weight change for different diets.  In this analysis we wish to describe the difference in clay and EC between the land use or lithology classes.  This will lead to more formal hypothesis testing in the later topics in ENVX2001.  
+Of interest to researchers is to assess the differences in a variable between groupings of data, e.g. weight change for different diets. In this analysis we wish to describe the difference in clay and EC between the land use or lithology classes. This will lead to more formal hypothesis testing in the later topics in ENVX2001.
 
-This is where the `tapply()` function is useful. 
+This is where the `tapply()` function is useful.
 
 ```{r}
 tapply(soil$clay0, soil$land_use, mean)
@@ -359,9 +345,9 @@ tapply(soil$clay0, soil$land_use, mean)
 
 The general structure of the `tapply()` function is 3 arguments which are described below based on the code above:
 
-- the response variable on which we wish to apply the function, clay 0, `soil$clay0`;
-- the categorical variable which indicates the groups we wish to separately apply the function to, land use, `soil$land_use`;
-- the function we are using, `mean()`.
+-   the response variable on which we wish to apply the function, clay 0, `soil$clay0`;
+-   the categorical variable which indicates the groups we wish to separately apply the function to, land use, `soil$land_use`;
+-   the function we are using, `mean()`.
 
 We can use the `tapply()` function for other statistics, for example the variance of each group is also important.
 
@@ -373,7 +359,7 @@ tapply(soil$clay0, soil$land_use, var)
 
 We can also generate graphics for properties for different groupings. In the example below we create boxplots for each land use class. Take note of the general structure of the arguments for the `boxplot` function in this case as they used for many functions in R.
 
-First we specify the response, `clay0`, next is the tilde, `~` which means a function of, then we have the predictor, `land_use`, and finally we specify the `data.frame` with the `data=` argument.  Using the argument `data=` enables us to specify column names only rather than their location within the data frame, e.g. `soil[,2]`, `soil$clay0`.
+First we specify the response, `clay0`, next is the tilde, `~` which means a function of, then we have the predictor, `land_use`, and finally we specify the `data.frame` with the `data=` argument. Using the argument `data=` enables us to specify column names only rather than their location within the data frame, e.g. `soil[,2]`, `soil$clay0`.
 
 ```{r}
 boxplot(clay0 ~ land_use, data = soil)
@@ -384,9 +370,10 @@ boxplot(clay0 ~ land_use, data = soil)
 :::
 
 ::: {.alert .alert-warning}
-**Exercise**: Create boxplots of clay 0-30 cm and clay 30-60 cm for the different lithology classes.  Are there any differences between the lithology classes based on the boxplots.
+**Exercise**: Create boxplots of clay 0-30 cm and clay 30-60 cm for the different lithology classes. Are there any differences between the lithology classes based on the boxplots.
 :::
 
 ## Closing Remarks
 
-Make sure you have a R Markdown document based on today's activities, and make sure you can knit an awesome looking HTML file.  This can be converted to PDF and Word documents if you wish.
+Make sure you have a R Markdown document based on today's activities, and make sure you can knit an awesome looking HTML file. This can be converted to PDF and Word documents if you wish -- Google it and find out how!
+
