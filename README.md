@@ -14,7 +14,7 @@ tutorials and labs are hosted on [mybinder.org](https://mybinder.org/).
     href="https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/tutw1/"
     target="_blank">Tutorial</a> |
     <a
-    href="https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/labw1/"
+    href="https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/envx2001_lab_w1/"
     target="_blank">Lab</a>
 - Week 2: Tutorial | Lab
 - Week 3: Tutorial | Lab
