@@ -9,10 +9,13 @@ tutorials and labs are hosted on [mybinder.org](https://mybinder.org/).
 
 <!-- shiny/test1: [![Binder](http://mybinder.org/badge_logo.svg)](http://mybinder.org/v2/gh/syoh/learnr-tutorial/master?urlpath=shiny/test1/) -->
 
-- Week 1: <a
-  href="https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/tut/"
-  target="_blank">Tutorial</a> |
-  <a href="https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/lab/" target="_blank">Lab</a>
+- **Week 1**
+  - `learnr`: <a
+    href="https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/tutw1/"
+    target="_blank">Tutorial</a> |
+    <a
+    href="https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/labw1/"
+    target="_blank">Lab</a>
 - Week 2: Tutorial | Lab
 - Week 3: Tutorial | Lab
 
