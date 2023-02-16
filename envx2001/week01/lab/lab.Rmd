@@ -40,6 +40,15 @@ At the end of this lab students should be able to:
 
 To begin, click on **Continue**.
 
+
+## Hold your horses
+
+Remember, you need to create your own R Markdown or Quarto document and then
+follow the exercises within.
+
+Click on **Next Topic** to start the Lab exercises.
+
+
 ## Topic 1: Key concepts 
 
 ### Discuss
@@ -55,7 +64,7 @@ Discuss in groups or with the person next to you:
 - [ChatGPT](https://openai.com/blog/chatgpt/)
 - [RTutor.ai](https://rtutor.ai)
 
-These websites hare long waiting lists and may not be available during class.
+These websites have long waiting lists and may not be available during class.
 
 ## Topic 2: Starfish measurements
 
