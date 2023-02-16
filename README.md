@@ -16,5 +16,4 @@ tutorials and labs are hosted on [mybinder.org](https://mybinder.org/).
 - Week 2: Tutorial | Lab
 - Week 3: Tutorial | Lab
 
-
 Created under the MIT License.
