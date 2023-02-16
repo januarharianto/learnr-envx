@@ -12,7 +12,7 @@ tutorials and labs are hosted on [mybinder.org](https://mybinder.org/).
 - Week 1:
   [Tutorial](https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/tut/)
   |
-  [Lab](https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/lab/)
+  [Lab](https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/w1lab/)
 - Week 2: Tutorial | Lab
 - Week 3: Tutorial | Lab
 
