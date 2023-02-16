@@ -26,7 +26,6 @@ In this tutorial we will show you how to:
 
 1.  Create an RStudio Project for ENVX2001.
 2.  Create an R Markdown file used to write reports and documentation.
-3.  Import data files from Excel and CSV into R.
 
 Click **Next Topic** to continue.
 
