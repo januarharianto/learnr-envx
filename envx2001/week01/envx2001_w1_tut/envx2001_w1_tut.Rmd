@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 **Welcome to Tutorial 1**. Tutorials in ENVX2001 are **self-study** and designed to complement your Labs. **Make sure to complete each week's tutorial before you attend your Lab**.
 
-Most tutorials will be accompanied by video(s), except for *this* tutorial. Instead, we have developed a series of videos available on [**Canvas**](https://canvas.sydney.edu.au/) which are meant to refresh your memory on R and RStudio, or show you how to get started if you are new.
+Most tutorials will be accompanied by video(s) to walk you through the document, except for *this* tutorial. Instead, we have developed a series of videos available on [**Canvas**](https://canvas.sydney.edu.au/) which are meant to refresh your memory on R and RStudio, or show you how to get started if you are new.
 
 To access these videos, on the ENVX2001 page, find **Week 1: Introduction** from the Modules sidebar, and click on **Week 1 Getting Started**.
 
