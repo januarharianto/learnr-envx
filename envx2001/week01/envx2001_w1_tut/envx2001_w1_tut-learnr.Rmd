@@ -27,8 +27,6 @@ In this tutorial we will show you how to:
 1.  Create an RStudio Project for ENVX2001.
 2.  Create an R Markdown file used to write reports and documentation.
 
-Click **Next Topic** to continue.
-
 ## Setting up an RStudio Project
 
 It's *great* to be organised when working with a lot of files, and RStudio helps you do that by the way of [Projects](https://support.posit.co/hc/en-us/articles/200526207-Using-RStudio-Projects). Organise yourself for ENVX2001 by creating a Project file. The steps below describe how to create one -- start by opening your RStudio app.
@@ -67,8 +65,7 @@ Verify that the project is created by looking at the top right corner of RStudio
 
 ### Done!
 
-Click **Next Topic** to move on to the next part of the Tutorial.
-
+Remember to *always* use the ENVX2001 RStudio Project when running your tutorials and labs as it simplifies data management tremendously by defining your working directory.
 
 ## R Markdown
 
@@ -112,7 +109,14 @@ Remove unnecessary text from the template by highlighting all the filler text an
 
 Finally, below is a GIF on what we just did. Click on **Next Topic** when you are ready.
 
-![](images/create_rmarkdown.gif){width="800"}
+```{r out.width="600px"}
+if (!knitr:::is_latex_output()) {
+  knitr::include_graphics("images/create_rmarkdown.gif")
+} else {
+  cat("Can't do moving images in a PDF, boss.")
+}
+
+```
 
 ## Final Remarks
 
