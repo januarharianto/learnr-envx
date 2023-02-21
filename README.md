@@ -16,7 +16,9 @@ tutorials and labs are hosted on [mybinder.org](https://mybinder.org/).
     <a
     href="https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week01/envx2001_w1_lab/envx2001_w1_lab-learnr.Rmd"
     target="_blank">Lab</a>
-- Week 2: Tutorial | Lab
+- Week 2: `learnr`: <a
+    href="https://mybinder.org/v2/gh/januarharianto/learnr-envx/main?urlpath=shiny/envx2001/week02/envx2001_w2_tut/envx2001_w2_tut-learnr.Rmd"
+    target="_blank">Tutorial</a> | Lab
 - Week 3: Tutorial | Lab
 
 Created under the MIT License.
