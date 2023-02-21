@@ -1,0 +1,156 @@
+---
+title: "Tutorial"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Welcome
+### Outline
+
+
+Welcome to Tutorial 2. In this tutorial we will show you how to:
+
+1. take a random sample from a finite population
+2. take a random sample from an infinite population
+3. describe sample data with the mean and 95% confidence interval
+
+
+## Part 1: Sampling - finite populations
+### How do I take a random sample?
+
+There are 2 types of populations from which we may wish to take a random sample; finite and infinite populations.
+Finite populations are made of discrete objects like households, people, farms etc. Infinite populations are continuous, such as soil, water in a stream. 
+
+### Finite populations
+
+Randomly sampling from a finite population can easily be performed in R.
+Imagine a hypothetical situation where we know there are 100 farms in a catchment and we wish to survey 10 of them about their management practices.
+First, we number the farms from 1 to 100:
+
+```{r}
+farms <- 1:100
+```
+
+The line above creates an object which is a vector with numbers from 1 to 100 going up in increments of 1. Each of these indicates a different farm. We now wish to randomly choose 10 farms to survey.
+
+```{r}
+set.seed(42) # this makes functions that depend on random number generators reproducible
+sites <- sample(x = farms, size = 10)
+sites
+```
+
+
+```{r sample1, exercise = TRUE}
+# playground
+
+```
+
+
+1. The `sample()` function has 2 main arguments (inputs), a vector as its first argument which defines the members of the population, and a number indicating how many to sample. 
+2. We assign `sites` to the output of `sample()`. This output is *also* a vector of numbers.
+3. Due to the randomness of the `sample()` function, `sites` will produce different outputs whenever you re-run the code, but `set.seed()` can "fix" the outputs to be identical to anyone who uses the same seed value.
+
+**The advantage of `set.seed()` is that we can reproduce random sampling by code, which makes it much easier to design experiments.**
+
+::: {.alert .alert-warning}
+**Exercise**
+Try deleting, commenting out (`#`), or changing the value of `set.seed()`, to see what it does to the output. How would you use `set.seed()` in an experimental design that prevents bias?
+
+:::
+
+
+
+```{r setseed, exercise=TRUE}
+# first, define your `farms` object, and assign numbers 1 to 100 to it
+# then, sample the farms data
+
+```
+
+
+
+
+## Part 2: Sampling - infinite populations
+### How do I sample a spatial location?
+
+Here, we are mainly considering infinite populations and we are interested in estimating the mean of a measurement, spatially, across a study area. In this case we need to randomly choose a spatial location which is defined by a spatial coordinate, x and y. 
+
+Assuming a *hypothetical* study site 100m wide and 100m long where we wish to choose 10 random locations, then we may use the technique below to randomly select 10 locations based on x and y coordinates:
+
+```{r}
+set.seed(101)
+xcoord <- runif(n = 10, min = 0, max = 100)
+ycoord <- runif(n = 10, min = 0, max = 100)
+
+sites_xy <- data.frame(xcoord, ycoord)
+
+```
+
+
+```{r spatialSample, exercise=TRUE}
+# playground
+
+```
+
+
+### Using `runif()`
+
+The `runif()` function generates random numbers with a uniform distribution. The 3 main arguments (inputs) are:
+
+1. `x`: the number of samples, 
+2. `min`: the minimum value we want in our random numbers
+3. `max`: the minimum value we want in our random numbers 
+
+How did we know this information? Use `?runif` and try to see where you can find similar documentation in the "Help" pane that appears.
+
+::: {.alert .alert-warning}
+**Exercise**
+How would you randomly sample 12 locations from a study site 50m wide and 50m long? Write your code below as practice.
+:::
+
+```{r sample_runif, exercise=TRUE}
+# don't forget to use `set.seed()`
+
+```
+
+### Plotting
+
+In our original example we choose 0 and 100 as our study area is 100 m wide and 100 m long. The random numbers are generated twice; once for the x-coordinates and again for the y-coordinates. We can now plot our sample locations.
+
+```{r}
+# base R plot
+plot(sites_xy, xlab = "x-coordinates (m)", ylab = "y-coordinates (m)")
+```
+
+One issue is that not all study areas are rectangles. Rather they are quite often irregular. This artificial dataset is just to illustrate the **concept** rather than be practically useful. The analysis of spatial data is not in the scope of this unit.
+
+## Part 2 - Simple random design
+
+### How do we summarise a simple random sample?
+
+In the case of a simple random sampling scheme we can manually calculate the mean and 95% CI to describe the sample data. You will be doing this during your lab.
+
+Alternatively, we could just use the `t.test()` function to estimate the mean and the associated 95% CI while ignoring the rest of the output, that is, *ignore the p-value and the null hypothesis*. **This works because the samples were sampled randomly, therefore the sampling distribution should follow a t-distribution.**
+Below is an example from the soil carbon dataset in the lecture.
+
+```{r}
+soil <- c(48, 56, 90, 78, 86, 71, 42)
+t.test(x = soil)
+```
+
+```{r soil, exercise=TRUE}
+# playground
+
+
+```
+
+## Finish
+
+This concludes this week's tutorial.
