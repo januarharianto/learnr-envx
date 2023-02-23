@@ -1,0 +1,185 @@
+---
+title: "Lab 2 - Surveying and Monitoring"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Learning outcomes
+At the end of this practical students should be able to:
+
+- explain conceptually the benefits of re-sampling (or not) the same units for monitoring studies.
+- use R to create rudimentary sampling designs;
+- estimate means and associated CIs for simple random designs;
+- estimate means and associated CIs for stratified random designs;
+- use R for estimating the change in means (and associated CIs) for monitoring schemes when the sample units are (i) resampled (ii) not resampled.
+
+## Topic 1 - Stratification
+
+### To stratify or not to stratify?
+
+Karunaratne et al. (2012)^[S.B. Karunaratne, T. Bishop, I. Odeh, J. Baldock, B. Marchant, Estimating change in soil organic carbon using legacy data as the baseline: Issues, approaches and lessons to learn, Soil Research, 52 (2014) 349-365.] measured soil carbon (%) in the Cox’s creek catchment in northern NSW using a stratified random sampling scheme. The results are summarised below. 
+
+```{r setupA, echo=FALSE}
+carbon <-
+  data.frame(
+    use = c(
+      "Forest", "Dryland Cropping", "Pasture-Vertosol", "Pasture-Other",
+      "Irrigated"
+    ),
+    n = c(9, 14, 14, 2, 5),
+    mean = c(0.65, 0.96, 1.06, 1.31, 0.78),
+    variance = c(1.4, 0.4, 0.8, 0.4, 0.8),
+    percent_area = c(20, 35, 35, 6, 4)
+  )
+
+overall <-
+  data.frame(
+    use = "Overall", n = 44, mean = 0.92, variance = 1,
+    percent_area = 100
+  )
+
+knitr::kable(rbind(carbon, overall))
+```
+
+Answer the next three questions using the data. Since we were not given the original data, but a summary table, we need to back-calculate our summaries of the data. 
+
+::: {.alert .alert-info}
+**Note** Your **Week 2 lecture notes** contain R code that can help you with your calculations of the 95% CI for stratified random sampling and simple random sampling.
+:::
+
+### Exercise 1.1
+
+Estimate the mean and associated 95% CI assuming **stratified** random sampling using the `carbon` dataset.
+
+Steps:
+
+1. Calculate the weight of each stratum to calculate weighted mean per stratum
+2. Calculate (weighted variance of the mean)^2^, and derive the standard error values
+3. Determine 95% CI via the equation below:
+
+$$95\% CI = \bar y \pm t^{0.025}_{n-L} \times se(\bar y)$$
+
+where $L$ = number of strata
+
+You can access the results by evaluating the `carbon` object in the code:
+
+```{r echo=TRUE, results=FALSE}
+carbon
+```
+
+```{r 1.1}
+# write your code here
+
+```
+
+### Exercise 1.2
+
+Estimate the mean and associated 95% CI assuming **simple** random sampling using the `overall` dataset.
+
+```{r 1.2}
+overall
+```
+
+```{r 1b}
+# write your code here
+
+```
+
+### Exercise 1.3
+
+Would you recommend stratified random sampling for future surveys? Provide evidence from the results of questions 2 and 3.
+
+
+## Topic 2 - Monitoring
+
+### Should we return to the same locations?
+
+In this exercise we will explore the impact that resampling the locations has on the precision (width of the 95% CI) with which we estimate the change in mean between 2 surveys. We will also show the equivalence of this to 2-sample t-tests.
+
+The key equation for estimating the variance of the change in mean is:
+
+$$Var (\Delta\bar{y}) = 
+  Var (\Delta\bar{y}_2) + 
+  Var (\Delta\bar{y}_1) - 
+  2 \times Cov(y_1, y_2) $$
+
+where:
+
+- $Var (\Delta\bar{y})$ is the variance of the change in mean between 2 surveys;
+- $Var (\Delta\bar{y}_2)$ is the variance of the mean for the 1st survey (baseline);
+- $Var (\Delta\bar{y}_1)$ is the variance of the mean for the 2nd survey (repeat);
+- $Cov(y_1, y_2)$ is the covariance between the means of the 2 surveys.
+
+When we resample the same locations we include the covariance term which describes the relationship between the observations in the 2 surveys. If resample at **different locations** we assume the **covariance is equal to 0**.
+
+In this exercise we will consider a study where kangaroos (number/km^2^) were counted in a woodland in an initial survey, and then 2 years later.
+The data is below.
+
+```{r, echo=FALSE}
+baseline <- c(4, 2, 6, 1, 3)
+rerun <- c(12, 11, 13, 14, 9)
+
+kangaroos <- data.frame(baseline, rerun)
+str(kangaroos)
+```
+
+### Exercise 2.1
+
+Intuitively, what would be the impact on the precison with which we estimate the mean when 
+
+(a) we resample the same locations in the repeat survey? 
+(b) we sample at different locations in the repeat survey?
+
+### Exercise 2.2
+
+Assuming we resampled at **different locations** to the baseline survey, use R to estimate the 95% CI for the change in mean between the 2 surveys. The equation is:
+
+$$95\%\ CI=\Delta\left(\bar{y}\right)\pm t_{df}^{0.025}\times\sqrt{Var\left(\Delta\bar{y}\right)}$$
+
+
+You will need to use the R calculations above to calculate ${Var}\left(\Delta\left(\bar{y}_1\right)\right)$, $Var\left(\Delta\left(\bar{y}_2\right)\right)$, and $Cov\left(\bar{y}_1,\bar{y}_2\right)$.
+
+As a starting point R script for calculating the covariance and variance for the **observations** is below, as is the code to calculate the t critical value ($t_{df}^{0.025}$). When we sample at different locations between surveys:
+$$df = n_{1}+ n_{2} - 2 = 5 + 5 - 2 = 8$$
+
+```{r echo=TRUE}
+t0 <- kangaroos$baseline
+t2 <- kangaroos$rerun
+# covariance
+cov(t0, t2)
+
+# variances
+var(t0)
+var(t2)
+
+# t-critical
+tcrit1 <- qt(0.975, 8)
+```
+
+### Exercise 2.3
+
+Assuming we resampled the **same locations** as the baseline survey use R to estimate the 95% CI for the change in mean between the 2 surveys. When we sample at same locations between surveys the *df* = number of paired sites - 1 = 5 - 1 = 4. 
+
+### Exercise 2.4
+
+For the scenarios in Exercise 2.2 and Exercise 2.3, was there a significant change in the mean number of kangaroos between the study period?
+
+### Exercise 2.5
+
+In the future which would you do? Re-sample the same sites or visit new sites in a monitoring program? If it were soil how would your thinking change? To help you answer the question compare the results with the soil monitoring example in the Lecture.
+
+### Exercise 2.6
+
+The scenario when we **resample at different locations** between surveys is actually the equivalent to a **2-sample t-test**, and the scenario when we **resample the same locations** is equivalent to a **paired t-test**. Check your answers in R by trying to perform both of these using the `t.test` function. Look at the help command, for example type `?t.test` to see what you can work out. Assume the variances are equal for the 2-sample t-test (use the argument `var.equal = TRUE`for this).
+
+### Exercise 2.7
+
+Compare the 95% CI for each scenario you calculated manually in Exercises 3 and 4. Are they same?
