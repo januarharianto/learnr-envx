@@ -166,7 +166,14 @@ tcrit1 <- qt(0.975, 8)
 
 ### Exercise 2.3
 
-Assuming we resampled the **same locations** as the baseline survey use R to estimate the 95% CI for the change in mean between the 2 surveys. When we sample at same locations between surveys the *df* = number of paired sites - 1 = 5 - 1 = 4. 
+Assuming we resampled the **same locations** as the baseline survey, use R to estimate the 95% CI for the change in mean between the 2 surveys. Note: when we sample at same locations between surveys the *df* = number of paired sites - 1 = 5 - 1 = 4. 
+
+Hint: the following formulae are used:
+
+$$\Delta \bar y = \bar y_2 - \bar y_1$$
+$$Var(\Delta \bar y) = Var( \bar y_2) + Var( \bar y_1) - 2 \times Cov(\bar y_1, \bar y_2)$$
+
+
 
 ### Exercise 2.4
 
