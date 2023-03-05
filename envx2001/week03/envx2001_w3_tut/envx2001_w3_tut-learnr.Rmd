@@ -1,0 +1,426 @@
+---
+title: "Tutorial 3"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(readxl)
+library(emmeans)
+# the objects below are to make the exercises work
+diatoms <- read_excel(path = "Data3.xlsx", 
+                      sheet = "Diatoms", 
+                      range = "A1:D35")
+anova.diatoms <- aov(Diversity ~ Zinc, data = diatoms)
+diatoms2 <- 
+  diatoms %>%
+  select(Diversity, Zinc) %>%
+  group_by(Zinc) %>%
+  mutate(row = row_number()) %>%
+  pivot_wider(names_from = Zinc, values_from = Diversity)
+
+mean_overall <- mean(diatoms$Diversity)
+mean_back <- mean(diatoms2$BACK, na.rm = TRUE)
+mean_low <- mean(diatoms2$LOW, na.rm = TRUE)
+mean_med <- mean(diatoms2$MED, na.rm = TRUE)
+mean_high <- mean(diatoms2$HIGH, na.rm = TRUE)
+ss_tot <- sum((diatoms$Diversity - mean_overall)^2)
+ss_res <- sum((diatoms2$BACK - mean_back)^2,
+  (diatoms2$LOW - mean_low)^2,
+  (diatoms2$MED - mean_med)^2,
+  (diatoms2$HIGH - mean_high)^2,
+  na.rm = TRUE
+)
+ss_trt <- ss_tot - ss_res
+N <- length(diatoms$Diversity)
+# df_tot <- N -1
+df_trt <- 4 - 1
+df_res <- N - 4
+ms_trt <- ss_trt/df_trt
+ms_res <- ss_res/df_res
+fval <- ms_trt/ms_res
+pf(fval, df_trt, df_res, lower.tail = FALSE)
+
+```
+
+## Welcome
+### Outline
+
+
+Welcome to Tutorial 3. In this tutorial we will show you how to:
+
+1. Import, explore data, and then perform and interpret an ANOVA
+2. Manually calculate a one-way ANOVA
+
+## Exercise 1: ANOVA workflow
+
+### Data 
+
+Medley & Clements (1998) sampled 34 locations along streams for diversity of diatoms.  Each site was classified according to the Zn concentration in the water.  There were 4 classes; background, low, medium and high.  Were there *differences* between each of the groupings in term of diatom diversity?
+
+Let's find out.
+
+The data is found in the *Diatoms* worksheet in the **`Data3.xlsx`** file.
+
+
+### Importing and processing data
+
+Data import in R can be tricky. Where data is in `.csv` format, R is able to recognise the file easily as it is an open-source format. 
+
+However, a lot of data is saved in MS Excel format. R can only read these files if the `readxl` package is installed. With the package, we have access to the `read_excel()` function and its arguments which help us address some import challenges due to the "visual" nature of Excel files:
+
+1. data may be present in multiple tabs, and so we need to let R know which tab to pick: the `sheet` argument
+2. data tables might be placed in different cells, and these "coordinates" must be provided to import the data properly: the `range` argument 
+
+R must store data as an object before we can use it. Here we use the `read_excel()` function to read the Excel file by specifying its `path`, then use `sheet` to indicate the sheet to read, and then use `range` to specify the cells. The output is then saved to a data object named `diatoms`.
+
+```{r}
+library(readxl)
+diatoms <- read_excel(path = "Data3.xlsx", 
+                      sheet = "Diatoms", 
+                      range = "A1:D35")
+```
+
+### Data structure
+
+It is good practice to check the data has been read in properly, one option is the `str()` function which displays the structure type of the object, in this case `diatoms` is a `data.frame` with 4 columns.  It also presents the type of data held in each column, in this case R thinks the data consists of `chr` (character) and `num` (numerical) data.
+
+
+```{r}
+str(diatoms)
+```
+
+However, `R` will treat `chr` data as text and we wish it to be categorical data, called `factor` in R, so we can fit models. In particular we need to convert the `Zinc` column (which specifies the contamination levels) to a `factor`.  The code for this is below.
+
+```{r}
+diatoms$Zinc <- as.factor(diatoms$Zinc)
+```
+
+If we check the structure of the `diatoms` data object again, you will notice that the `Zinc` variable has now been changed, from `chr` to `fct`.
+
+```{r}
+str(diatoms)
+```
+
+
+```{r ex1-setup, exercise=TRUE}
+# playground
+# str(diatoms)
+# diatoms$Zinc <- as.factor(diatoms$Zinc)
+# str(diatoms)
+```
+
+### Exploratory data analysis
+
+#### Summary statistics
+
+Common functions for calculating summary statistics are shown in the table below. You may remember these from week 1.
+
+```{r, echo=FALSE}
+statistic <- c("median", "sample variance", "sample standard deviation", "minimum", "maximum", "1st quartile", "3rd quartile", "number of observations")
+command <- c("`median()`", "`var()`", "`sd()`", "`min()`", "`max()`", "`quantile()`", "`quantile()`", "`length()`")
+tdata <- cbind(statistic, command)
+library(knitr)
+kable(tdata)
+```
+
+The `summary()` function is rather useful to obtain the 1st quartile, 3rd quartile, minimum, maximum, mean and median values at once.
+
+```{r ex2,exercise=TRUE}
+summary(diatoms$Diversity)
+```
+
+Note, that it does not calculate the standard deviation, variance or number of observations.
+
+It is more useful to calculate summary statistics for each level of Zn contamination as we are interested in differences between the mean of each group. This is where the `tapply()` function is useful. 
+
+### Using `tapply()`
+
+```{r ex3, exercise=TRUE}
+tapply(X = diatoms$Diversity, INDEX = diatoms$Zinc, FUN = mean)
+```
+
+The general structure of the `tapply()` function is 3 arguments which are described below based on the code above:
+
+- the response variable on which we wish to apply the function, `diatoms$Diversity`;
+- the categorical variable which indicates the groups we wish to separately apply the function to, `diatoms$Zinc`;
+- the function we are using, `mean()`.
+
+We can use the `tapply()` function for other statistics, for example the standard deviation of each group is also important.
+
+```{r ex4, exercise=TRUE}
+tapply(X = diatoms$Diversity, INDEX = diatoms$Zinc, FUN = sd)
+```
+
+:::{.alert .alert-warning}
+**Question 1**: What can you say about the the different levels of Zinc from looking at the mean and standard deviation values?
+:::
+
+### Answer to Question 1
+
+:::{.alert .alert-info}
+**Answer**: The mean diatom diversity for the `HIGH` level of Zn concentration is much smaller than the other groupings indicating that there is something happening, more formal hypothesis testing is needed to determine whether this is significant.  In terms of the variance of each group these are quite uniform so the assumption of constant variance is likely to be met.   For example, the ratio of the largest standard deviation to the smallest standard deviation (0.503/0.427) is less than 2.
+:::
+
+### Graphical summaries 
+
+First we start with the classic graphical summaries.  Note, we have not added correcting labelling of axes and a title. 
+
+### Histogram
+
+```{r ex6, exercise=TRUE}
+hist(diatoms$Diversity)
+```
+
+### Boxplot
+
+```{r ex7, exercise=TRUE}
+boxplot(diatoms$Diversity)
+```
+
+Optional: you may want to use `ggplot2` plots instead. Read the `ggplot2` guide to understand the `ggplot2` syntax below.
+
+
+### Histogram in `ggplot2()`
+
+```{r ex8, exercise=TRUE}
+library(ggplot2)
+ggplot(diatoms, aes(x = Diversity)) +
+  geom_histogram(bins = 5)
+```
+
+### Histogram in `ggplot2()`
+
+```{r ex9, exercise=TRUE}
+ggplot(diatoms, aes(y = Diversity)) +
+  geom_boxplot()
+```
+
+### Plotting groups 
+
+Since we are interested in the **differences** in diatom diversity between the different levels of Zn concentration, we need graphics for each grouping, not for the overall dataset.  The table below gives heuristic rules about which graphical summary to use based on the number of observations. 
+
+```{r, echo=FALSE}
+observations <- c("1-5", "6-20", "20 or more")
+graphics <- c("plot raw data", "boxplot", "histogram")
+command <- c("`stripchart()`", "`boxplot()`", "`hist()`")
+gdata <- cbind(observations, graphics, command)
+knitr::kable(gdata)
+```
+
+To decide on the graphical summary we need to know the number of observations.
+
+```{r ex10, exercise=TRUE}
+tapply(X = diatoms$Diversity, INDEX = diatoms$Zinc, FUN = length)
+```
+
+
+### Grouped boxplot
+
+Based on this the boxplot is the most appropriate summary. The code below creates a nice looking boxplot for each group.
+
+```{r ex11, exercise=TRUE}
+boxplot(Diversity ~ Zinc,
+  data = diatoms, main = "Diatom diversity in contaminated streams",
+  xlab = "Zn levels", ylab = "Diversity"
+)
+```
+
+
+### Grouped boxplot in `ggplot2()`
+
+In `ggplot2`:
+
+```{r ex12, exercise=TRUE}
+ggplot(diatoms, aes(Zinc, Diversity, fill = Zinc)) +
+  geom_boxplot() +
+  xlab("Zn levels") +
+  ylab("Diversity")
+```
+
+:::{.alert .alert-warning}
+Question: Can you interpret and describe the boxplot above?
+:::
+
+
+:::{.alert .alert-info}
+**Interpretation**: Based on the median values (thick bold lines) the smallest diversity is associated with the `HIGH` level of Zn concentration.  The boxplots also show that box part ($Q_1,Q_3$) for the `HIGH` level of Zn do not overlap with the others levels of Zn.  The boxes overlap with each other for the other levels.  This is some initial evidence that it will be likely that all the different levels of Zn will have the same diversity with the exception of the `HIGH` level of Zn. 
+:::
+
+
+### 1-way Analysis of Variance
+
+A 1-way ANOVA involves one treatment (or grouping) factor.  The model we are fitting is:
+
+$y_{i,j} =\mu_i+\epsilon_{i,j}$,
+
+where:
+
+1. $y_{i,j}$ is the response for observation *j* in treatment (or group) *i*,
+2. $\mu_j$ is the mean of treatment (or group) *i*,
+3. $\epsilon_{i,j}$ is the residual term which is an independent random variable that has a mean of 0, constant variance and is normally distributed.  This can be expressed shorthand as $\sim N(0,\sigma_2)$.  The residual MS estimates $\sigma_2$.
+
+The statistical hypotheses we are testing are:
+
+1. $H_{0}$: $\mu_1 = \mu_2 = ... \mu_t$;\
+2. $H_{1}$: not al $\mu_j$ are equal.
+
+The code below fits the anova model using the `aov` function and saves the it to an object called `anova.diatoms`.  We can then extract the ANOVA table using the `summary` function.
+
+```{r anova1, exercise=TRUE}
+anova.diatoms <- aov(Diversity ~ Zinc, data = diatoms)
+summary(anova.diatoms)
+```
+
+### Model notation - the formula
+
+**General Model notation in R**:  The code above illustrates the general way models are fitted using R.  We call a function (`aov`) and in `( )` we have the `response ~ inputs`.  The argument `data=` tells us the data frame where the response and inputs are found. 
+
+### Assumptions
+
+Based on the boxplots and histograms during data exploration, the assumptions of normality and equal variances are met. We will discuss assumptions again in greater detail next week when we start to look at residuals.
+
+The ANOVA table has a P-value < 0.05 so we reject the null hypothesis ($H_0$).  From this we know at least one of the groups has a different mean but which of the pairs of groups are different?  
+
+### Preview 
+
+For this week, we will simply examine the 95% CI around each mean.  You can quickly calculate the means and associated 95% CI using the `emmeans` function in the `emmeans` package.  The arguments are the anova model object and the treatment factor for which you wish to estimate the mean and associated 95% CI.
+
+
+```{r emmeans1, exercise=TRUE}
+# install.packages("emmeans",repos="http://cran.csiro.au/")
+library(emmeans)
+emmeans(anova.diatoms, "Zinc")
+```
+
+For now we look for non-overlapping CI's as evidence of a significant difference.  There is only 1 pair `HIGH` and `LOW` that do not have overlapping 95% CI's.
+
+An alternative is to plot these which is easier to interpret.
+
+```{r emmeans2, exercise=TRUE}
+plot(emmeans(anova.diatoms, "Zinc"), comparison = TRUE)
+```
+
+We will learn a better method for identifying significant differences in Topic 4 (next week).
+
+
+
+## Exercise 2: Manual ANOVA 
+
+### Data
+
+In this exercise we will perform the ANOVA manually using R using the same `Diatoms` sheet in `Data3.xlsx`.
+
+```{r}
+str(diatoms)
+```
+
+We can use the `diatoms` data object for overall calculations, but we will also need to split the data into groups for grouped calculations. This has been done for you below and saved as an object called `diatoms2`.
+
+```{r}
+diatoms2 <- 
+  diatoms %>%
+  select(Diversity, Zinc) %>%
+  group_by(Zinc) %>%
+  mutate(row = row_number()) %>%
+  pivot_wider(names_from = Zinc, values_from = Diversity)
+
+```
+
+Use the equations below and in the table to assist you.
+
+$$SS_{tot} = \sum(data - overall\ mean)^2$$
+$$SS_{trt} = \sum n_i \times (group\ mean - overall\ mean)^2$$
+$$SS_{res} = \sum(data - group\ mean)^2$$
+
++------------+------------+-------------+----------------------------------+---------------------+
+| Source     | Df         | Sum Sq      | Mean Sq                          | F value             |
++===========:+===========:+============:+=================================:+====================:+
+| Treatment  | $t-1$      | $SS_{trt}$  | $MS_{trt} = SS_{trt} / df_{trt}$ | $MS_{trt}/MS_{res}$ |
++------------+------------+-------------+----------------------------------+---------------------+
+| Residual   | $N - t$    | $SS_{res}$  | $MS_{res} = SS_{res} / df_{res}$ |                     |
++------------+------------+-------------+----------------------------------+---------------------+
+| Total      | $N - 1$    | $SS_{tot}$  | $MS_{tot} = SS_{tot} / df_{tot}$ |                     |
++------------+------------+-------------+----------------------------------+---------------------+
+
+### Steps to calcualte ANOVA manually
+
+1. Calculate overall mean and group mean for `Diversity`, then
+2. Calculate $SS_{tot}$, $SS_{trt}$ and $SS_{res}$
+3. Calculate $df_{tot}$, $df_{trt}$ and $df_{res}$
+4. Calculate $MS_{trt}$ and $MS_{res}$
+5. Calculate $F$ value
+6. Determine p-value using `pf()`
+
+### 1. Calculate overall mean and group means
+
+We can calculate mean from `Diversity` in the original `diatoms` dataset.
+For group means, we summarise each column in `diatoms2`.
+
+```{r means, exercise=TRUE}
+mean_overall <- mean(diatoms$Diversity)
+mean_back <- mean(diatoms2$BACK, na.rm = TRUE)
+mean_low <- mean(diatoms2$LOW, na.rm = TRUE)
+mean_med <- mean(diatoms2$MED, na.rm = TRUE)
+mean_high <- mean(diatoms2$HIGH, na.rm = TRUE)
+
+```
+
+### 2. Calculate $SS$
+
+Apply the 3 equations for $SS$ from above.
+
+```{r ss, exercise=TRUE}
+ss_tot <- sum((diatoms$Diversity - mean_overall)^2)
+ss_res <- sum((diatoms2$BACK - mean_back)^2,
+  (diatoms2$LOW - mean_low)^2,
+  (diatoms2$MED - mean_med)^2,
+  (diatoms2$HIGH - mean_high)^2,
+  na.rm = TRUE
+)
+ss_trt <- ss_tot - ss_res
+
+```
+
+### 3. Calculate $df$
+
+```{r df, exercise=TRUE}
+N <- length(diatoms$Diversity)
+# df_tot <- N -1
+df_trt <- 4 - 1
+df_res <- N - 4
+```
+
+
+### 4. Calculate $MS_{trt}$ and $MS_{res}$
+
+```{r ms, exercise=TRUE}
+ms_trt <- ss_trt/df_trt
+ms_res <- ss_res/df_res
+```
+
+
+### 5. Calculate $F$ value
+
+```{r fvalue, exercise=TRUE}
+fval <- ms_trt/ms_res
+fval
+```
+
+
+### 6. Determine p-value
+
+```{r pval, exercise=TRUE}
+pf(fval, df_trt, df_res, lower.tail = FALSE)
+```
+
+
+## Finish
+
+This is the end of tutorial 3.

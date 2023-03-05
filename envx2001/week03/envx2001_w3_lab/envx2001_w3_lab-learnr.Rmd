@@ -1,0 +1,212 @@
+---
+title: "Lab 3 - Analysis of Variance (ANOVA)"
+output: 
+  learnr::tutorial:
+    progressive: true
+    allow_skip: true
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+## Learning outcomes
+At the end of the tutorial and lab, students should be able to:
+
+- explain situations when a 2-sample t-test gives the same results as a 1-way ANOVA;
+- manually calculate a 1-way ANOVA;
+- analyse an experiment with a 1-way ANVOVA and interpret the results.
+
+All of the data for this practical is in the **Data3.xlsx** file.
+
+## Topic 1 - The ANOVA table
+
+### Apocalypse!
+
+**You and a small community have survived the zombie apocalypse.** It is a world with no computers but you have many books, and some goats.
+
+You have managed to perform an experiment to explore how best to feed your goats. You wish to analyse the data and have to do the ANOVA "by hand". You have a solar powered calculator. Amazingly, this calculator has a copy of RStudio, but the code for performing an ANOVA was broken by your sheep-farming neighbours (so some data is missing).
+
+But that's OK! You know how to perform ANOVA manually (see lecture notes). This time, you're going to use clues in the ANOVA table to reconstruct the ANOVA table.
+
+### Experiment
+
+Your experiment involved growing maize as a fodder crop, where three levels of planting density were examined, namely 20, 30 and 40 plants per unit area. Each density was trialled on five different plots; all 15 plots were considered to be similar in most respects. The sample means and standard deviations (kg of dry matter/plot) for each planting density were as follows:
+
+```{r, echo=FALSE}
+
+knitr::kable(
+  data.frame(
+ Treatment = c("20 plants/unit area", 
+        "30 plants/unit area", 
+        "40 plants/unit area", 
+        "Overall"),
+ Mean = c(17.58, 27.18, 27.14, 23.97),
+ Std.Dev = c(2.70, 1.89, 2.02, 5.11),
+ Variance = c(7.290, 3.577, 4.093, "-")
+))
+```
+
+You wish to perform an analysis of variance to determine if the density of planting influenced the total dry weight of maize for the plot.
+
+```{r, echo=FALSE}
+Source_Variation <- c("Planting_Density", "Residual", "Total")
+Degree_Freedom <- c("a", "b", "c")
+Sum_Squares <- c("d", "e", "f")
+Mean_Square <- c(152.96, "g", "h")
+F_Statistic <- c("i", "-", "-")
+gdat <- cbind(Source_Variation, Degree_Freedom, Sum_Squares, Mean_Square, F_Statistic)
+library(knitr)
+kable(gdat)
+```
+
+### Exercise 1
+
+::: {.alert .alert-warning}
+**Exercise 1:**
+
+What are the null and alternate hypotheses for this test?
+:::
+
+### Exercise 2
+
+::: {.alert .alert-warning}
+**Exercise 2:**
+
+Calculate the missing values in the ANOVA table above (`a` -- `i`) given the summary statistics, equations from the lectures and a MS value of 152.96 for planting density, i.e. treatment. 
+
+This table (from the lectures) might help:
+
++------------+------------+-------------+----------------------------------+---------------------+
+| Source     | Df         | Sum Sq      | Mean Sq                          | F value             |
++===========:+===========:+============:+=================================:+====================:+
+| Treatment  | $t  - 1$   | $SS_{trt}$  | $MS_{trt} = SS_{trt} / df_{trt}$ | $MS_{trt}/MS_{res}$ |
++------------+------------+-------------+----------------------------------+---------------------+
+| Residual   | $N - t$    | $SS_{res}$  | $MS_{res} = SS_{res} / df_{res}$ |                     |
++------------+------------+-------------+----------------------------------+---------------------+
+| Total      | $N - 1$    | $SS_{tot}$  | $MS_{tot} = SS_{tot} / df_{tot}$ |                     |
++------------+------------+-------------+----------------------------------+---------------------+
+
+**Another hint is that the total MS is approximately the overall variance of the data.**
+
+Here is some suggested code to get started; you may choose to use your own object names:
+
+```{r}
+# MS_trt <- 152.96 # 
+# N <- 15 # total number of plots in all treatments
+# df_total <- N - 1
+
+# #...
+
+# fstat <- MS_trt/g # where g is MS_residual
+
+```
+
+**Alternative**: You may work out the values by hand or in Excel.
+
+:::
+
+### Exercise 3
+
+::: {.alert .alert-warning}
+**Exercise 3:**
+
+Do you reject the null hypothesis? Estimate the F<sub>critical</sub> or F<sub>0.05</sub> value to determine this. You can use the `qf()` function to obtain F<sub>0.05</sub>, which uses the following syntax:
+
+```{r eval=FALSE}
+qf(p = .05,  # critical or alpha p value
+   df1 = ?,   # treatment degrees of freedom
+   df2 = ?,   # residual degrees of freedom
+   lower.tail = FALSE) # use FALSE for probability that F-stat > F_crit
+```
+
+**Hint:** Use [this resource](https://www.statology.org/f-critical-value-r/) to help you.
+
+:::
+
+## Part 2: 1-way ANOVA
+The levels of immunoglobulin (Ig) in blood serum (g/100 ml) in 3 breeds of newborn lambs have been investigated. A total of 44 lambs were sampled, with approximately equal numbers per breed. The researcher wants to know whether or not there are significant differences in immunoglobulin levels between the breeds.
+
+The data is found in the *Lambs* worksheet.
+
+::: {.alert .alert-warning}
+**Exercise 4:**
+
+4. Using the skills you have developed in the tutorial, analyse these data carefully in `R`, showing your statistical and biological conclusions. In your workings:
+
+    - state your null and alternate hypotheses
+    - plot boxplots and/or histograms of your data
+    - demonstrate the model fit using the `aov()` function
+    - test assumptions, by checking sd values, or by looking at your exploratory plots (checking residuals is not necessary at this point)
+    - report your test statistic, degrees of freedom and p-value
+    - report the statistical conclusion by addressing the null hypothesis
+    - explaind the results within a biological context to the data
+
+
+:::
+
+## Part 3: Equivalence between a 2-sample t-test and a 1-way ANOVA
+These data are from an experiment designed to compare 15-day mean comb weights (g) of two lots of male chicks, one receiving sex hormone A (testosterone), the other C (dehydroandrosterone). While we usually analyse these data by using a (pooled) two-sample t-test, a single factor analysis of variance approach could be used (with two levels of the treatment factor). We will compare the results from both analyses.
+
+The data is found in the *Comb* worksheet.
+
+### Exercise 5 
+
+::: {.alert .alert-warning}
+**Exercise 5:**
+
+Import into R, and perform some checks to verify the two-sample t-test (or one-way ANOVA) is appropriate, i.e. investigate the shape of the distributions, and the standard deviations.
+
+
+:::
+
+### Exercise 6 
+
+::: {.alert .alert-warning}
+**Exercise 6:**
+
+In R, perform a 2-sample t-test using the `t.test()` function, and use the `var.equal = TRUE` argument to ensure a standard 2-sample t-test is performed. Make sure that you can interpret the output.
+
+
+
+:::
+
+### Exercise 7 
+
+
+::: {.alert .alert-warning}
+**Exercise 7:**
+
+Next, perform a one-way ANOVA using the `aov` function, followed by `summary`, and interpret the results. How do you interpret the Residual MS for this analysis? 
+
+
+
+:::
+
+
+### Exercise 8 
+
+
+::: {.alert .alert-warning}
+**Exercise 8:**
+
+Now compare the t-test and ANOVA outputs. What do you notice about:
+
+i.	the degrees of freedom;
+ii.	the P-value?
+:::
+
+### Exercise 9 
+
+::: {.alert .alert-warning}
+**Exercise 9:**
+
+When there are only two treatment groups, the observed *F* and *t* values are related by *F* = $t^2$. Demonstrate this for the observed values in this exercise.
+:::
+
+## End
+
+This is the end of the lab worksheet.
