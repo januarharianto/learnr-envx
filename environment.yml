@@ -5,3 +5,4 @@ dependencies:
   - r-tidyverse
   - r-moments
   - r-learnr
+  - r-emmeans
